@@ -1,6 +1,6 @@
 # M5Stack Core2 - LVGL + FastLED example 
 
-![Picture of Core2 showing GUI](docs/core2numpad.jpg)
+![Picture of Core2 showing GUI](docs/core2guidemo.jpg)
 
 The M5Stack Core2 - LVGL + FastLED example is a project that showcases the capabilities of the M5Stack Core2 development board, the LVGL graphics library and FastLED. 
 
