@@ -45,3 +45,8 @@ void mqtt_re_connect() {
     }
   }
 }
+
+void mqtt_sub(){
+  client.subscribe("/berisha/color");
+  client.subscribe("/berisha/pattern");
+}
