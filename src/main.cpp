@@ -3,6 +3,7 @@
 #include <FastLED.h>
 #include <M5_DLight.h>
 #include <M5GFX.h>
+#include <networking.h>
 
 // data pin of port c
 #define LED_PIN     14
@@ -14,16 +15,38 @@
 
 CRGB leds[NUM_LEDS];
 M5_DLight sensor;
-uint16_t lux;
 M5GFX display;
 M5Canvas canvas(&display);
 char info[40];
 uint16_t brightness;
 
+// values for different lighting environments/lux values taken from: 
+// https://learn.microsoft.com/en-us/windows/win32/sensorsapi/understanding-and-interpreting-lux-values
+uint8_t getLedBrightness(){
+  int lux = sensor.getLUX();
+  if(lux<=200){
+    brightness=255;
+  }
+  else if (lux>200 && lux<=1000){
+    brightness=150;
+  }
+  else if(lux>1000 && lux<=5000){
+    brightness=70;
+  }
+  else if(lux>5000 && lux<30000){
+    brightness=20;
+  }
+  else{
+    brightness = 0;
+  }
+  
+  return brightness;
+}
+
 // TO DO: dynamic brightness of led strip based on lux value
 
 void oneAfterAnother(){
-// Move a single white led 
+FastLED.setBrightness(getLedBrightness());
    for(int whiteLed = 0; whiteLed < NUM_LEDS; whiteLed = whiteLed + 1) {
       // Turn our current led on to white, then show the leds
       leds[whiteLed] = CRGB::White;
@@ -39,8 +62,8 @@ void oneAfterAnother(){
    }
 }
 
-void pride() 
-{
+void pride() {
+  FastLED.setBrightness(getLedBrightness());
   static uint16_t sPseudotime = 0;
   static uint16_t sLastMillis = 0;
   static uint16_t sHue16 = 0;
@@ -81,11 +104,29 @@ void pride()
 }
 
 
+void mqtt_callback(char* topic, byte* payload, unsigned int length) {
+  // Parse Payload into String
+  char * buf = (char *)malloc((sizeof(char)*(length+1)));
+  memcpy(buf, payload, length);
+  buf[length] = '\0';
+  String payloadS = String(buf);
+  payloadS.trim();
+
+  if(String(topic) == "example") {
+    if(payloadS == "on") {
+      pride();
+    }
+    if(payloadS == "off") {
+      FastLED.setBrightness(0);
+    }
+  }
+}
+
+
 void setup(){
   M5.begin();
   FastLED.addLeds<SK6812, LED_PIN, RGB>(leds, NUM_LEDS)
   .setCorrection(TypicalLEDStrip);
-  FastLED.setBrightness(255);
     display.begin();
     canvas.setTextDatum(MC_DATUM);
     canvas.setColorDepth(1);
@@ -96,12 +137,13 @@ void setup(){
     Serial.println("Sensor begin.....");
     sensor.begin();
     sensor.setMode(CONTINUOUSLY_H_RESOLUTION_MODE);
+    setup_wifi();
+    mqtt_init(mqtt_callback);
 }
 
 
 void lightStuff(){
-  lux = sensor.getLUX();
-  sprintf(info, "lux: %d", lux);
+  sprintf(info, "lux: %d", sensor.getLUX());
   canvas.fillSprite(BLACK);
   canvas.drawString(info, 160, 120);
   canvas.pushSprite(0, 0);
@@ -111,26 +153,5 @@ void lightStuff(){
 void loop(){
   pride();
   FastLED.show();
-  lightStuff();
+  mqtt_loop();
 }
-// ----------------------------------------------------------------------------
-// MQTT callback
-// ----------------------------------------------------------------------------
-
-/*void mqtt_callback(char* topic, byte* payload, unsigned int length) {
-  // Parse Payload into String
-  char * buf = (char *)malloc((sizeof(char)*(length+1)));
-  memcpy(buf, payload, length);
-  buf[length] = '\0';
-  String payloadS = String(buf);
-  payloadS.trim();
-
-  if(String(topic) == "example") {
-    if(payloadS == "on") {
-      lv_led_on(led);
-    }
-    if(payloadS == "off") {
-      lv_led_off(led);
-    }
-  }
-}*/
