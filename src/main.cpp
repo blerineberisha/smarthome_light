@@ -1,100 +1,123 @@
 #include <Arduino.h>
-#include "view.h"
-#include "networking.h"
-#include "sideled.h"
+#include <M5Core2.h>
+#include <FastLED.h>
+#include <M5_DLight.h>
+#include <M5GFX.h>
 
+// data pin of port c
+#define LED_PIN     14
+// data pin of port a
+#define LIGHT_PIN   26
+#define NUM_LEDS    30
+#define CHIPSET     SK6812
+#define COLOR_ORDER RGB
 
-void event_handler_checkbox(struct _lv_obj_t * obj, lv_event_t event);
-void event_handler_button(struct _lv_obj_t * obj, lv_event_t event);
-void init_gui_elements();
-void mqtt_callback(char* topic, byte* payload, unsigned int length);
+CRGB leds[NUM_LEDS];
+M5_DLight sensor;
+uint16_t lux;
+M5GFX display;
+M5Canvas canvas(&display);
+char info[40];
+uint16_t brightness;
 
-unsigned long next_lv_task = 0;
+// TO DO: dynamic brightness of led strip based on lux value
 
-lv_obj_t * led;
+void oneAfterAnother(){
+// Move a single white led 
+   for(int whiteLed = 0; whiteLed < NUM_LEDS; whiteLed = whiteLed + 1) {
+      // Turn our current led on to white, then show the leds
+      leds[whiteLed] = CRGB::White;
 
-lv_obj_t * red_checkbox;
-lv_obj_t * blue_checkbox;
+      // Show the leds (only one of which is set to white, from above)
+      FastLED.show();
 
-lv_obj_t * off_checkbox;
-lv_obj_t * on_checkbox;
-lv_obj_t * blink_checkbox;
+      // Wait a little bit
+      delay(100);
 
-lv_obj_t * left_button;
-lv_obj_t * right_button;
-
-void event_handler_checkbox(struct _lv_obj_t * obj, lv_event_t event) {
-  if(event == LV_EVENT_VALUE_CHANGED ) {
-    if(
-      (obj == red_checkbox || obj == blue_checkbox) &&
-      (lv_checkbox_is_checked(red_checkbox) || lv_checkbox_is_checked(blue_checkbox))
-      ) {
-      lv_checkbox_set_checked(blue_checkbox, obj == blue_checkbox ? lv_checkbox_is_checked(blue_checkbox) : false);
-      lv_checkbox_set_checked(red_checkbox, obj == red_checkbox ? lv_checkbox_is_checked(red_checkbox) : false);
-    }
-    if(
-      (obj == off_checkbox || obj == on_checkbox || obj == blink_checkbox) &&
-      (lv_checkbox_is_checked(off_checkbox) || lv_checkbox_is_checked(on_checkbox) || lv_checkbox_is_checked(blink_checkbox))
-      ) {
-      lv_checkbox_set_checked(off_checkbox, obj == off_checkbox ? lv_checkbox_is_checked(off_checkbox) : false);
-      lv_checkbox_set_checked(on_checkbox, obj == on_checkbox ? lv_checkbox_is_checked(on_checkbox) : false);
-      lv_checkbox_set_checked(blink_checkbox, obj == blink_checkbox ? lv_checkbox_is_checked(blink_checkbox) : false);
-    }
-    bool is_ready = (
-        ((
-        (lv_checkbox_is_checked(red_checkbox) && !lv_checkbox_is_checked(blue_checkbox)) ||
-        (!lv_checkbox_is_checked(red_checkbox) && lv_checkbox_is_checked(blue_checkbox))
-      ) &&
-      (
-        (!lv_checkbox_is_checked(off_checkbox) && lv_checkbox_is_checked(on_checkbox) && !lv_checkbox_is_checked(blink_checkbox)) ||
-        (!lv_checkbox_is_checked(off_checkbox) && !lv_checkbox_is_checked(on_checkbox) && lv_checkbox_is_checked(blink_checkbox))
-      )) || (
-        (lv_checkbox_is_checked(off_checkbox) && !lv_checkbox_is_checked(on_checkbox) && !lv_checkbox_is_checked(blink_checkbox))
-      ));
-    lv_obj_set_click(left_button, is_ready);
-    lv_obj_set_click(right_button, is_ready);
-    lv_obj_set_state(left_button, is_ready ? LV_STATE_DEFAULT : LV_STATE_DISABLED);
-    lv_obj_set_state(right_button, is_ready ? LV_STATE_DEFAULT : LV_STATE_DISABLED);
-  } 
+      // Turn our current led back to black for the next loop around
+      leds[whiteLed] = CRGB::Black;
+   }
 }
 
-void event_handler_button(struct _lv_obj_t * obj, lv_event_t event) {
-  if(event == LV_EVENT_PRESSED) {
-    uint8_t led_start = (obj == right_button ? 0 : 5);
-    uint8_t led_end = (obj == right_button ? 5 : 10);
-    CRGB color = lv_checkbox_is_checked(blue_checkbox) ? CRGB::Blue : CRGB::Red;
-    uint8_t state = SIDELED_STATE_OFF;
-    if(lv_checkbox_is_checked(on_checkbox)) state = SIDELED_STATE_ON;
-    if(lv_checkbox_is_checked(blink_checkbox)) state = SIDELED_STATE_BLINK;
-    set_sideled_color(led_start,led_end, color);
-    set_sideled_state(led_start,led_end, state);
+void pride() 
+{
+  static uint16_t sPseudotime = 0;
+  static uint16_t sLastMillis = 0;
+  static uint16_t sHue16 = 0;
+ 
+  uint8_t sat8 = beatsin88( 87, 220, 250);
+  uint8_t brightdepth = beatsin88( 341, 96, 224);
+  uint16_t brightnessthetainc16 = beatsin88( 203, (25 * 256), (40 * 256));
+  uint8_t msmultiplier = beatsin88(147, 23, 60);
+
+  uint16_t hue16 = sHue16;//gHue * 256;
+  uint16_t hueinc16 = beatsin88(113, 1, 3000);
+  
+  uint16_t ms = millis();
+  uint16_t deltams = ms - sLastMillis ;
+  sLastMillis  = ms;
+  sPseudotime += deltams * msmultiplier;
+  sHue16 += deltams * beatsin88( 400, 5,9);
+  uint16_t brightnesstheta16 = sPseudotime;
+  
+  for( uint16_t i = 0 ; i < NUM_LEDS; i++) {
+    hue16 += hueinc16;
+    uint8_t hue8 = hue16 / 256;
+
+    brightnesstheta16  += brightnessthetainc16;
+    uint16_t b16 = sin16( brightnesstheta16  ) + 32768;
+
+    uint16_t bri16 = (uint32_t)((uint32_t)b16 * (uint32_t)b16) / 65536;
+    uint8_t bri8 = (uint32_t)(((uint32_t)bri16) * brightdepth) / 65536;
+    bri8 += (255 - brightdepth);
+    
+    CRGB newcolor = CHSV( hue8, sat8, bri8);
+    
+    uint16_t pixelnumber = i;
+    pixelnumber = (NUM_LEDS-1) - pixelnumber;
+    
+    nblend( leds[pixelnumber], newcolor, 64);
   }
 }
 
-void init_gui_elements() {
-  add_label("1. Select Color", 10, 10);
-  red_checkbox = add_checkbox("Red", 10, 40, event_handler_checkbox);
-  blue_checkbox = add_checkbox("Blue", 120, 40, event_handler_checkbox);
-  add_label("2. Select Mode", 10, 70);
-  off_checkbox = add_checkbox("Off", 10, 100, event_handler_checkbox);
-  on_checkbox = add_checkbox("On", 120, 100, event_handler_checkbox);
-  blink_checkbox = add_checkbox("Blink", 200, 100, event_handler_checkbox);
-  add_label("3. Apply Color to side:", 10, 140);
-  left_button = add_button("Apply Left", event_handler_button, 0, 170, 150, 50);
-  right_button = add_button("Apply Right", event_handler_button, 160, 170, 150, 50);
 
-  lv_obj_set_click(left_button, false);
-  lv_obj_set_click(right_button, false);
-  lv_obj_set_state(left_button, LV_STATE_DISABLED);
-  lv_obj_set_state(right_button, LV_STATE_DISABLED);
+void setup(){
+  M5.begin();
+  FastLED.addLeds<SK6812, LED_PIN, RGB>(leds, NUM_LEDS)
+  .setCorrection(TypicalLEDStrip);
+  FastLED.setBrightness(255);
+    display.begin();
+    canvas.setTextDatum(MC_DATUM);
+    canvas.setColorDepth(1);
+    canvas.setFont(&fonts::Orbitron_Light_24);
+    canvas.setTextSize(2);
+    canvas.createSprite(display.width(), display.height());
+    canvas.setPaletteColor(1, ORANGE);
+    Serial.println("Sensor begin.....");
+    sensor.begin();
+    sensor.setMode(CONTINUOUSLY_H_RESOLUTION_MODE);
 }
 
 
+void lightStuff(){
+  lux = sensor.getLUX();
+  sprintf(info, "lux: %d", lux);
+  canvas.fillSprite(BLACK);
+  canvas.drawString(info, 160, 120);
+  canvas.pushSprite(0, 0);
+}
+
+
+void loop(){
+  pride();
+  FastLED.show();
+  lightStuff();
+}
 // ----------------------------------------------------------------------------
 // MQTT callback
 // ----------------------------------------------------------------------------
 
-void mqtt_callback(char* topic, byte* payload, unsigned int length) {
+/*void mqtt_callback(char* topic, byte* payload, unsigned int length) {
   // Parse Payload into String
   char * buf = (char *)malloc((sizeof(char)*(length+1)));
   memcpy(buf, payload, length);
@@ -110,51 +133,4 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       lv_led_off(led);
     }
   }
-}
-
-
-// ----------------------------------------------------------------------------
-// UI event handlers
-// ----------------------------------------------------------------------------
-
-String buffer = "";
-
-void event_handler_num(struct _lv_obj_t * obj, lv_event_t event) {
-
-}
-
-lv_obj_t * mbox;
-
-
-// ----------------------------------------------------------------------------
-// MAIN LOOP
-// ----------------------------------------------------------------------------
-
-void loop() {
-  if(next_lv_task < millis()) {
-    lv_task_handler();
-    next_lv_task = millis() + 5;
-  }
-
-  // Uncomment the following lines to enable MQTT
-  // mqtt_loop();
-}
-
-// ----------------------------------------------------------------------------
-// MAIN SETUP
-// ----------------------------------------------------------------------------
-
-void setup() {
-  init_m5();
-  init_display();
-  Serial.begin(115200);
-  // Uncomment the following lines to enable WiFi and MQTT
-  //lv_obj_t * wifiConnectingBox = show_message_box_no_buttons("Connecting to WiFi...");
-  //lv_task_handler();
-  //delay(5);
-  //setup_wifi();
-  //mqtt_init(mqtt_callback);
-  //close_message_box(wifiConnectingBox);
-  init_gui_elements();
-  init_sideled();
-}
+}*/
