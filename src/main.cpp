@@ -66,13 +66,13 @@ void oneAfterAnother()
   for (int whiteLed = 0; whiteLed < NUM_LEDS; whiteLed = whiteLed + 1)
   {
     // Turn our current led on to white, then show the leds
-    leds[whiteLed] = CRGB::White;
+    leds[whiteLed] = RED;
 
     // Show the leds (only one of which is set to white, from above)
     FastLED.show();
 
     // Wait a little bit
-    delay(100);
+    delay(50);
 
     // Turn our current led back to black for the next loop around
     leds[whiteLed] = CRGB::Black;
@@ -149,8 +149,7 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length)
 void setup()
 {
   M5.begin();
-  FastLED.addLeds<SK6812, LED_PIN, RGB>(leds, NUM_LEDS)
-      .setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<SK6812, LED_PIN, RGB>(leds, NUM_LEDS);
   display.begin();
   canvas.setTextDatum(MC_DATUM);
   canvas.setColorDepth(1);
@@ -161,9 +160,9 @@ void setup()
   Serial.println("Sensor begin.....");
   sensor.begin();
   sensor.setMode(CONTINUOUSLY_H_RESOLUTION_MODE);
-  setup_wifi();
-  mqtt_init(mqtt_callback);
-  mqtt_sub();
+  //setup_wifi();
+  //mqtt_init(mqtt_callback);
+  //mqtt_sub();
 }
 
 void lightStuff()
@@ -181,7 +180,8 @@ void colorLight(String color)
 }
 
 void loop(){
-  FastLED.showColor(GREEN);
+  oneAfterAnother();
+  FastLED.show();
   lightStuff();
-  mqtt_loop();
+  //mqtt_loop();
 }
