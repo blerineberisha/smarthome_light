@@ -6,7 +6,7 @@ Dieses Programm wurde mit C/C++ programmiert und beinhaltet einen Telegram Chatb
 * Automatische Helligkeit[^1] des Lichts des LED Streifen setzen
 * Mit Telegram Chatbot[^2] Leuchtfunktionen setzen
 * Mit Display vom M5Stack Core2 Leuchtfunktionen setzen[^3]
-* Leuchtfunktionen[^4]: 
+* Leuchtfunktionen[^4] : 
   * Weiss
   * Einzelne Farben
   * Einzelne Farben blinkend
@@ -74,7 +74,7 @@ Die Konfiguration sollte so funktionieren, wie in diesem Repo angegeben. Falls e
 **Durch Änderungen der Konfiguration können Builds und Uploads des Projekts failen.**
 
 ## Links
-[^1] [Lux Wert Interpretation](https://learn.microsoft.com/en-us/windows/win32/sensorsapi/understanding-and-interpreting-lux-values)
-[^2] [Telegram Chatbot](https://t.me/lightningmcbot)
-[^3] [Verwendete Grundstruktur des Projekts](https://github.com/alptbz/core2guidemo)
-[^4] [Verwendeter Beispielcode FastLED](https://github.com/FastLED/FastLED/tree/master/examples)
+[^1]: [Lux Wert Interpretation](https://learn.microsoft.com/en-us/windows/win32/sensorsapi/understanding-and-interpreting-lux-values)
+[^2]: [Telegram Chatbot](https://t.me/lightningmcbot)
+[^3]: [Verwendete Grundstruktur des Projekts](https://github.com/alptbz/core2guidemo)
+[^4]: [Verwendeter Beispielcode FastLED](https://github.com/FastLED/FastLED/tree/master/examples)
