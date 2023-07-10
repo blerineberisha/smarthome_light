@@ -8,7 +8,7 @@ Das Programm nutzt die PlatformIO Erweiterung in Visual Studio Code. Insgesamt, 
 * GitHub Repo clonen
 * Repo in IDE öffnen (z.B. [VS Code](https://code.visualstudio.com))
 * PlatformIO installieren
-* M5Stack Core2 anschliessen
+* M5Stack Core2 (<u>[mit M5Go Bottom2](https://docs.m5stack.com/en/base/m5go_bottom2)</u>) anschliessen
 
 <p align="center">
   <img src="./docs/addstack.jpg"/>
@@ -29,6 +29,25 @@ Das Programm nutzt die PlatformIO Erweiterung in Visual Studio Code. Insgesamt, 
 * Option 2: Button
   * Häkchen &#x2713; für "Build"
   * Pfeil &rarr; für "Upload and Monitor"
+
+Nach Befolgung dieser Schritte sollte das Programm auf dem angeschlossenen M5Stack Core2 Gerät laufen. 
+
+## Mögliche Fehler
+### Ports
+---
+Stellen Sie sicher, dass..
+* das DLight Sensor Unit am <u>Port A</u> angeschlossen ist.
+* der LED Streifen am <u>Port C</u> angeschlossen ist. 
+
+
+Falls für den LED Streifen ein anderer Port verwendet wird oder die Ports ausgetauscht werden (bitte Gerätbeschreibung genau durchlesen und den Sensor überprüfen [^bignote]), müssen evtl. in der [Main-Datei](./src/main.cpp) die Pins geändert werden.
+
+[^bignote]: Auf dem Sensor wird z.T. angezeigt, welcher Port benutzt werden soll. Für das DLight Sensor Unit sollte grundsätzlich Port A verwendet werden.
+
+<p align="center">
+  <img src="./docs/dlight.jpg"/>
+</p>
+
 
 
 ## Links
