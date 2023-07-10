@@ -9,7 +9,12 @@ Das Programm nutzt die PlatformIO Erweiterung in Visual Studio Code. Insgesamt, 
 * Repo in IDE öffnen (z.B. [VS Code](https://code.visualstudio.com))
 * PlatformIO installieren
 * M5Stack Core2 anschliessen
-![](docs/addstack.jpg)
+
+<p align="center">
+  <img src="./docs/addstack.jpg"/>
+</p>
+
+
 * DLight Sensor Unit (Port A) und LED Streifen (Port C) an den M5Stack Core2 anschliessen
 * Option 1: Command Palette öffnen
   * Mac: Shift + Command + P
