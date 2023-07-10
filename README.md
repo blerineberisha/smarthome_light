@@ -1,27 +1,33 @@
-# M5Stack Core2 - LVGL + FastLED example 
+# Smarthome Lichtsteuerung
+Dieses Programm wurde mit C/C++ programmiert und beinhaltet einen Telegram Chatbot, welcher mit Python programmiert wurde. 
 
-![Picture of Core2 showing GUI](docs/core2guidemo.jpg)
+## Was kann das Programm? 
 
-The M5Stack Core2 - LVGL + FastLED example is a project that showcases the capabilities of the M5Stack Core2 development board, the LVGL graphics library and FastLED. 
+## Wie benutze ich das Programm?
+Das Programm nutzt die PlatformIO Erweiterung in Visual Studio Code. Insgesamt, um das Programm zu starten, müssen folgende Schritte befolgt werden: 
+* GitHub Repo clonen
+* Repo in IDE öffnen (z.B. [VS Code](https://code.visualstudio.com))
+* PlatformIO installieren
+* M5Stack Core2 anschliessen
+![](docs/addstack.jpg)
+* DLight Sensor Unit (Port A) und LED Streifen (Port C) an den M5Stack Core2 anschliessen
+* Option 1: Command Palette öffnen
+  * Mac: Shift + Command + P
+  * Windows/Linux: Ctrl + Shift + P
+  * &rarr; "PlatformIO: Build"
+  * &rarr; "PlatformIO: Upload and Monitor"
 
-# Quickstart
- - Clone repository
-```
-git clone https://github.com/alptbz/core2guidemo
-```
- - Open repository with PlatformIO
- - rename `src/config.cpp.template` to `src/config.cpp`
- - Adjust serial port in `platform.ini`
- - Build and upload
+<p align="center">
+  <img src="./docs/piosymbols.jpg"/>
+</p>
 
-# Links
- - ToF Sensor Library: https://registry.platformio.org/libraries/pololu/VL53L0X/installation
- - Tof Sensor Example: https://github.com/pololu/vl53l0x-arduino/blob/master/examples/Continuous/Continuous.ino
- - Used LVGL Example: https://github.com/mhaberler/m5core2-lvgl-demo
- - LVGL 7.x Docs: https://docs.lvgl.io/7.11/
- - Original chinese source: https://macsbug.wordpress.com/2021/06/18/how-to-run-lvgl-on-m5stack-esp32/
- - FastLED Example: https://github.com/m5stack/M5-ProductExampleCodes/blob/master/Base/M5GO_BOTTOM2/M5GO_BOTTOM2.ino
+* Option 2: Button
+  * Häkchen &#x2713; für "Build"
+  * Pfeil &rarr; für "Upload and Monitor"
 
-# More examples
- - https://github.com/alptbz/core2guitofexample/
- - https://github.com/alptbz/core2numpad/
+
+## Links
+- [Lux Werte und Bedeutung](https://learn.microsoft.com/en-us/windows/win32/sensorsapi/understanding-and-interpreting-lux-values)
+- [Telegram Chatbot](https://t.me/lightningmcbot)
+- [Verwendeter Beispielcode FastLED](https://github.com/FastLED/FastLED/tree/master/examples)
+- [Verwendete Grundstruktur des Projekts](https://github.com/alptbz/core2guidemo)
