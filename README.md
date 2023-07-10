@@ -52,6 +52,17 @@ Das Programm nutzt die PlatformIO Erweiterung in Visual Studio Code. Insgesamt, 
 Nach Befolgung dieser Schritte sollte das Programm auf dem angeschlossenen M5Stack Core2 Gerät laufen. 
 
 ## Mögliche Fehler
+
+### LED Streifen
+---
+Wenn der LED Streifen ein anderer ist als im Projekt definiert, müssen allenfalls die LED Variablen geändert werden und die Farbänderung entfernt oder geändert werden. 
+
+#### Clockless vs Clocked LEDS
+Falls z.B. anstatt eines **SK6812 LED Streifen** ein **LPD6803 LED Streifen** benutzt wird, muss ein weiterer Pin (Clock Pin) angegeben werden.
+
+Der Unterschied zwischen Clocked und Clockless types ist, dass Clocked types einen zusätzlichen Pin haben, welcher als 'Clock' bezeichnet wird. Zusätzlich gibt es die Data Pins, welche separat vom Clock Pin sind.   
+Diese 'CLock' stellt sicher, dass alles synchronisiert abläuft und dem Data Pin kommuniziert, wann Bits von der Data Line gesampled werden sollten.[^5]
+
 ### Ports
 ---
 Stellen Sie sicher, dass..
@@ -78,3 +89,4 @@ Die Konfiguration sollte so funktionieren, wie in diesem Repo angegeben. Falls e
 [^2]: [Telegram Chatbot](https://t.me/lightningmcbot)
 [^3]: [Verwendete Grundstruktur des Projekts](https://github.com/alptbz/core2guidemo)
 [^4]: [Verwendeter Beispielcode FastLED](https://github.com/FastLED/FastLED/tree/master/examples)
+[^5]: [Clocked vs Clockless](https://learn.sparkfun.com/tutorials/serial-peripheral-interface-spi/all#:~:text=SPI%20works%20in%20a%20slightly,bits%20on%20the%20data%20line.)
