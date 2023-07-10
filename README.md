@@ -3,6 +3,25 @@ Dieses Programm wurde mit C/C++ programmiert und beinhaltet einen Telegram Chatb
 
 ## Was kann das Programm? 
 
+* Mit Telegram Chatbot Leuchtfunktionen setzen
+* Mit Display vom M5Stack Core2 Leuchtfunktionen setzen
+* Automatische Helligkeit des Lichts des LED Streifen setzen. 
+* Leuchtfunktionen: 
+  * Weiss
+  * Einzelne Farben
+  * Einzelne Farben blinkend
+  * Rainbow
+  * Party
+  * "First Light"
+  * Aus
+
+
+## Was wird benötigt?
+* [M5Stack Core2](https://shop.m5stack.com/products/m5stack-core2-esp32-iot-development-kit)
+* [M5Go Bottom2](https://shop.m5stack.com/products/m5go-battery-bottom2-for-core2-only)
+* [DLight Unit - Ambient Light Sensor](https://shop.m5stack.com/products/dlight-unit-ambient-light-sensor-bh1750fvi-tr)
+* [SK6812 Digital RGB LED Strip](https://shop.m5stack.com/products/sk6812-rgb-led-flex-strip)
+
 ## Wie benutze ich das Programm?
 Das Programm nutzt die PlatformIO Erweiterung in Visual Studio Code. Insgesamt, um das Programm zu starten, müssen folgende Schritte befolgt werden: 
 * GitHub Repo clonen
@@ -49,9 +68,13 @@ Auf dem Sensor wird z.T. angezeigt, welcher Port benutzt werden soll. Für das D
 </p>
 
 
+### Konfiguration
+---
+Die Konfiguration sollte so funktionieren, wie in diesem Repo angegeben. Falls es nicht funktionieren sollte, müssen einzelne Variabeln geändert werden (z.B. env, falls ein anderes Gerät vorhanden ist).   
+**Durch Änderungen der Konfiguration können Builds und Uploads des Projekts failen.**
 
 ## Links
-- [Lux Werte und Bedeutung](https://learn.microsoft.com/en-us/windows/win32/sensorsapi/understanding-and-interpreting-lux-values)
+- [Lux Wert Interpretation](https://learn.microsoft.com/en-us/windows/win32/sensorsapi/understanding-and-interpreting-lux-values)
 - [Telegram Chatbot](https://t.me/lightningmcbot)
 - [Verwendeter Beispielcode FastLED](https://github.com/FastLED/FastLED/tree/master/examples)
 - [Verwendete Grundstruktur des Projekts](https://github.com/alptbz/core2guidemo)
