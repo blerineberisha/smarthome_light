@@ -40,12 +40,12 @@ Stellen Sie sicher, dass..
 * der LED Streifen am <u>Port C</u> angeschlossen ist. 
 
 
-Falls für den LED Streifen ein anderer Port verwendet wird oder die Ports ausgetauscht werden (bitte Gerätbeschreibung genau durchlesen und den Sensor überprüfen [^1]), müssen evtl. in der [Main-Datei](./src/main.cpp) die Pins geändert werden.
+Falls für den LED Streifen ein anderer Port verwendet wird oder die Ports ausgetauscht werden (bitte Gerätbeschreibung genau durchlesen und den Sensor überprüfen), müssen evtl. in der [Main-Datei](./src/main.cpp) die Pins geändert werden.
 
-[^1]: Auf dem Sensor wird z.T. angezeigt, welcher Port benutzt werden soll. Für das DLight Sensor Unit sollte grundsätzlich Port A verwendet werden.
+Auf dem Sensor wird z.T. angezeigt, welcher Port benutzt werden soll. Für das DLight Sensor Unit sollte grundsätzlich Port A verwendet werden.
 
 <p align="center">
-  <img src="./docs/dlight.jpg"/>
+    <img src="./docs/dlight.jpg"/>
 </p>
 
 
