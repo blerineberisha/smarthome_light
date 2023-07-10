@@ -89,4 +89,4 @@ Die Konfiguration sollte so funktionieren, wie in diesem Repo angegeben. Falls e
 [^2]: [Telegram Chatbot](https://t.me/lightningmcbot)
 [^3]: [Verwendete Grundstruktur des Projekts](https://github.com/alptbz/core2guidemo)
 [^4]: [Verwendeter Beispielcode FastLED](https://github.com/FastLED/FastLED/tree/master/examples)
-[^5]: [Clocked vs Clockless](https://learn.sparkfun.com/tutorials/serial-peripheral-interface-spi/all#:~:text=SPI%20works%20in%20a%20slightly,bits%20on%20the%20data%20line.)
+[^5]: [Clocked vs Clockless](https://learn.sparkfun.com/tutorials/serial-peripheral-interface-spi/)
