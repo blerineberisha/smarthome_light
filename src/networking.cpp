@@ -36,16 +36,14 @@ void mqtt_re_connect() {
     Serial.println("Attempting MQTT connection...");
     if (client.connect(clientId)) {
         // Define subscriptions here
-      client.subscribe("lvgl/#");
+      client.subscribe("berisha/#");
+      client.subscribe("berisha/status/#");
+      client.subscribe("berisha/mode/#");
+      Serial.println("Done :)");
     } else {
       Serial.println("failed, rc=");
       Serial.println(client.state());
       Serial.println("try again in 5 seconds");
     }
   }
-}
-
-void mqtt_sub(){
-  client.subscribe("/berisha/color");
-  client.subscribe("/berisha/pattern");
 }

@@ -4,6 +4,7 @@
 #include <M5_DLight.h>
 #include <M5GFX.h>
 #include <networking.h>
+#include <bits/stdc++.h>
 
 // data pin of port c
 #define LED_PIN 14
@@ -21,11 +22,10 @@ char info[40];
 uint16_t brightness;
 
 /*
-TO DO: 
-- GUI 
+TO DO:
+- GUI
 - Model house
 - configure mqtt and telegram chatbot
-- md doc
 - instruction manual
 - finish up all the LED functions (-> rainbow, single color, blink in color, white, party, off)
 */
@@ -59,14 +59,25 @@ uint8_t getLedBrightness()
   return brightness;
 }
 
+void blink()
+{
+  while (true)
+  {
+    FastLED.setBrightness(getLedBrightness());
+    FastLED.showColor(RED);
+    delay(500);
+    FastLED.showColor(BLACK);
+    delay(500);
+  }
+}
 
-void oneAfterAnother()
+void wave()
 {
   FastLED.setBrightness(getLedBrightness());
   for (int whiteLed = 0; whiteLed < NUM_LEDS; whiteLed = whiteLed + 1)
   {
     // Turn our current led on to white, then show the leds
-    leds[whiteLed] = RED;
+    leds[whiteLed] = WHITE;
 
     // Show the leds (only one of which is set to white, from above)
     FastLED.show();
@@ -130,18 +141,27 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length)
   buf[length] = '\0';
   String payloadS = String(buf);
   payloadS.trim();
-  if (String(topic) == "color")
+  if (String(topic) == "berisha/color")
   {
-    if (payloadS == String("color"))
+    if (payloadS == String("red"))
     {
-      FastLED.showColor(RED);
+      FastLED.showColor(CRGB::Red);
+    }
+    else if (payloadS == String("green"))
+    {
+      FastLED.showColor(CRGB::Green);
+      // mqtt_publish("berisha/color", "green");
     }
   }
-  if (String(topic) == "status")
+  if (String(topic) == "berisha/status")
   {
-    if (payloadS == String("status"))
+    if (payloadS == String("off"))
     {
       FastLED.setBrightness(0);
+    }
+    else if (payloadS == String("on"))
+    {
+      FastLED.setBrightness(getLedBrightness());
     }
   }
 }
@@ -149,7 +169,7 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length)
 void setup()
 {
   M5.begin();
-  FastLED.addLeds<SK6812, LED_PIN, RGB>(leds, NUM_LEDS);
+  FastLED.addLeds<SK6812, LED_PIN, RGB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   display.begin();
   canvas.setTextDatum(MC_DATUM);
   canvas.setColorDepth(1);
@@ -158,11 +178,15 @@ void setup()
   canvas.createSprite(display.width(), display.height());
   canvas.setPaletteColor(1, ORANGE);
   Serial.println("Sensor begin.....");
+  Serial.println("try again in 5 seconds");
   sensor.begin();
   sensor.setMode(CONTINUOUSLY_H_RESOLUTION_MODE);
-  //setup_wifi();
-  //mqtt_init(mqtt_callback);
-  //mqtt_sub();
+  setup_wifi();
+  FastLED.setBrightness(getLedBrightness());
+  mqtt_init(mqtt_callback);
+  mqtt_publish("berisha/color", "green");
+  mqtt_publish("berisha/mode", "solid");
+  mqtt_publish("berisha/status", "on");
 }
 
 void lightStuff()
@@ -173,15 +197,15 @@ void lightStuff()
   canvas.pushSprite(0, 0);
 }
 
-void colorLight(String color)
+void colorLight()
 {
   FastLED.setBrightness(getLedBrightness());
   FastLED.showColor(RED);
 }
 
-void loop(){
-  oneAfterAnother();
+void loop()
+{
+  pride();
   FastLED.show();
-  lightStuff();
-  //mqtt_loop();
+  mqtt_loop();
 }

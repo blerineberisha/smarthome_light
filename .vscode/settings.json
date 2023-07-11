@@ -289,5 +289,9 @@
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
   "cmake.sourceDirectory": "/Users/blerineb./Desktop/smarthome_light/.pio/libdeps/m5stack-core2/FastLED",
-  "C_Cpp.errorSquiggles": "disabled"
+  "C_Cpp.errorSquiggles": "disabled",
+  "files.associations": {
+    "*.py": "python",
+    "regex": "cpp"
+  }
 }
