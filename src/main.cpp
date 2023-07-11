@@ -169,7 +169,7 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length)
 void setup()
 {
   M5.begin();
-  FastLED.addLeds<SK6812, LED_PIN, RGB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<SK6812, LED_PIN, RGB>(leds, NUM_LEDS);
   display.begin();
   canvas.setTextDatum(MC_DATUM);
   canvas.setColorDepth(1);
